@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 — 2026-11-23
+- Integration icon and logo now use the gofanco logo, with a light-lettered logo for dark themes.
+- Power-on reads full status straight away, and the device keeps its firmware version when Home Assistant starts while the matrix is in standby.
+
 ## 1.0.0 — 2026-11-23
 
 - First release.

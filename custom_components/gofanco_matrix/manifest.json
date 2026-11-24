@@ -9,5 +9,5 @@
   "issue_tracker": "https://github.com/heatvent/ha-gofanco-matrix/issues",
   "loggers": ["custom_components.gofanco_matrix"],
   "requirements": ["pyserial-asyncio-fast>=0.11"],
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

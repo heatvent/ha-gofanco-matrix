@@ -123,4 +123,4 @@ python -m pytest -q
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Unofficial: gofanco did not make and does not support this integration.
+MIT. See [LICENSE](LICENSE). Unofficial: gofanco did not make and does not support this integration. The gofanco name and logo are trademarks of gofanco and are used only to identify the device this integration controls.
