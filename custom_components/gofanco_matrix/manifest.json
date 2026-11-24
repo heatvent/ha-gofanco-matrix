@@ -1,0 +1,13 @@
+{
+  "domain": "gofanco_matrix",
+  "name": "gofanco Matrix44-HDBT",
+  "codeowners": ["@heatvent"],
+  "config_flow": true,
+  "documentation": "https://github.com/heatvent/ha-gofanco-matrix",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/heatvent/ha-gofanco-matrix/issues",
+  "loggers": ["custom_components.gofanco_matrix"],
+  "requirements": ["pyserial-asyncio-fast>=0.11"],
+  "version": "1.0.0"
+}

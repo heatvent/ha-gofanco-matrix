@@ -1,0 +1,234 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to the matrix",
+        "description": "Choose how Home Assistant talks to the gofanco Matrix44-HDBT.",
+        "menu_options": {
+          "tcp": "Network (built-in network module or a serial-to-TCP adapter)",
+          "serial": "Serial port (RS-232 / USB adapter on this Home Assistant host)"
+        }
+      },
+      "tcp": {
+        "title": "Network connection",
+        "description": "The matrix's network module listens on TCP port 23 and accepts the same commands as RS-232. Give it a DHCP reservation in your router so the address doesn't change.",
+        "data": {
+          "name": "Name",
+          "host": "IP address or host name",
+          "port": "TCP port"
+        }
+      },
+      "serial": {
+        "title": "Serial connection",
+        "description": "Connect the matrix's RS-232 port (3-pin Phoenix, use the included DB9 cable). The matrix default is 9600 baud, 8N1.",
+        "data": {
+          "name": "Name",
+          "serial_port": "Serial port",
+          "baudrate": "Baud rate"
+        }
+      },
+      "reconfigure": {
+        "title": "Change connection",
+        "description": "Switch between network and serial, or change the address or port. Entities and their history are kept.",
+        "menu_options": {
+          "reconfigure_tcp": "Network",
+          "reconfigure_serial": "Serial port"
+        }
+      },
+      "reconfigure_tcp": {
+        "title": "Network connection",
+        "data": {
+          "host": "IP address or host name",
+          "port": "TCP port"
+        }
+      },
+      "reconfigure_serial": {
+        "title": "Serial connection",
+        "data": {
+          "serial_port": "Serial port",
+          "baudrate": "Baud rate"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not open the connection. Check the address/port or the serial device.",
+      "unknown": "Unexpected error, see the log."
+    },
+    "abort": {
+      "already_configured": "This matrix connection is already configured.",
+      "reconfigure_successful": "Connection updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Matrix options",
+        "description": "Name the inputs and outputs (blank keeps the default). Names are used for entity names and the source lists.",
+        "data": {
+          "input_1": "Input 1 name",
+          "input_2": "Input 2 name",
+          "input_3": "Input 3 name",
+          "input_4": "Input 4 name",
+          "output_1": "Output 1 name (HDBaseT)",
+          "output_2": "Output 2 name (HDBaseT)",
+          "output_3": "Output 3 name (HDBaseT, HDMI loop-out on 5)",
+          "output_4": "Output 4 name (HDMI)",
+          "poll_interval": "Full status poll interval",
+          "auto_power_on": "Turn the matrix on automatically when routing"
+        },
+        "data_description": {
+          "poll_interval": "The matrix pushes changes as they happen; the poll is a safety net.",
+          "auto_power_on": "In standby the matrix ignores every command except power on."
+        }
+      }
+    }
+  },
+  "selector": {
+    "hdcp_mode": {
+      "options": {
+        "on": "HDCP on",
+        "off": "HDCP off",
+        "match": "Match display",
+        "bypass": "Bypass"
+      }
+    },
+    "cec_source_key": {
+      "options": {
+        "power_on": "Power on",
+        "power_off": "Power off",
+        "menu": "Main menu",
+        "up": "Up",
+        "down": "Down",
+        "left": "Left",
+        "right": "Right",
+        "enter": "Enter",
+        "back": "Back",
+        "exit": "Exit menu"
+      }
+    },
+    "cec_display_key": {
+      "options": {
+        "power_on": "Power on",
+        "power_off": "Power off",
+        "volume_up": "Volume up",
+        "volume_down": "Volume down",
+        "mute": "Mute"
+      }
+    }
+  },
+  "services": {
+    "send_command": {
+      "name": "Send command",
+      "description": "Send any RS-232 command (a trailing '.' is added) and return the matrix's reply lines.",
+      "fields": {
+        "command": {"name": "Command", "description": "For example STA., PresetSta01. or EDIDGOUT04."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "set_route": {
+      "name": "Set route",
+      "description": "Route an input to an output (OUTxx:yy.). Output 0 routes the input to every output.",
+      "fields": {
+        "output": {"name": "Output", "description": "1-4, or 0 for all."},
+        "input": {"name": "Input", "description": "1-4."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "recall_preset": {
+      "name": "Recall preset",
+      "description": "Load a saved routing preset (1-9).",
+      "fields": {
+        "preset": {"name": "Preset", "description": "1-9."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "save_preset": {
+      "name": "Save preset",
+      "description": "Save the current routing as a preset (1-9).",
+      "fields": {
+        "preset": {"name": "Preset", "description": "1-9."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "set_hdcp": {
+      "name": "Set HDCP mode",
+      "description": "HDCP handling for an output (0 = all).",
+      "fields": {
+        "output": {"name": "Output", "description": "1-5, or 0 for all."},
+        "mode": {"name": "Mode", "description": "On, off, match the display, or bypass."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "set_edid": {
+      "name": "Set built-in EDID",
+      "description": "Give an input one of the built-in EDIDs (9 = user-defined).",
+      "fields": {
+        "input": {"name": "Input", "description": "1-4, or 0 for all."},
+        "edid": {"name": "EDID", "description": "1-9, see the matrix manual for the list."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "copy_edid": {
+      "name": "Copy EDID from display",
+      "description": "Copy the EDID of the display on an output to an input (EDIDMxxByy.).",
+      "fields": {
+        "output": {"name": "Output", "description": "Display to copy from, 1-5."},
+        "input": {"name": "Input", "description": "1-4, or 0 for all."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "restore_default_edid": {
+      "name": "Restore default EDID",
+      "description": "Put every input back on the factory EDID (EDIDMInit.).",
+      "fields": {
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "set_poc": {
+      "name": "Set receiver power (PoC)",
+      "description": "Power over the HDBaseT cable to receiver 1-3 (0 = all).",
+      "fields": {
+        "receiver": {"name": "Receiver", "description": "1-3, or 0 for all."},
+        "on": {"name": "On", "description": "Power on or off."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "set_hdmi_5v": {
+      "name": "Set HDMI 5V",
+      "description": "HDMI +5V on the HDMI outputs 4 and 5 (0 = both).",
+      "fields": {
+        "output": {"name": "Output", "description": "4, 5, or 0 for both."},
+        "on": {"name": "On", "description": "5V on or off."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "cec_source": {
+      "name": "CEC to source",
+      "description": "Send a CEC key to the source on an input (0 = all).",
+      "fields": {
+        "input": {"name": "Input", "description": "1-4, or 0 for all."},
+        "key": {"name": "Key", "description": "The CEC function."},
+        "device_type": {"name": "CEC device type", "description": "Two hex digits; 04 = playback device (default)."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "cec_display": {
+      "name": "CEC to display",
+      "description": "Send a CEC command to the display on HDMI output 4 or 5 (0 = both).",
+      "fields": {
+        "output": {"name": "Output", "description": "4, 5, or 0 for both."},
+        "key": {"name": "Key", "description": "The CEC function."},
+        "device_type": {"name": "CEC device type", "description": "Two hex digits; 40 = TV (default)."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    },
+    "factory_reset": {
+      "name": "Factory reset",
+      "description": "Reset the matrix to factory settings (RST.). Routing, presets, EDID and HDCP settings are lost.",
+      "fields": {
+        "confirm": {"name": "Confirm", "description": "Must be on, or nothing is sent."},
+        "config_entry_id": {"name": "Matrix", "description": "Only needed when more than one matrix is configured."}
+      }
+    }
+  }
+}

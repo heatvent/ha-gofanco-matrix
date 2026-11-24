@@ -1,0 +1,156 @@
+send_command:
+  fields:
+    command:
+      required: true
+      example: "STA_VIDEO."
+      selector:
+        text:
+    config_entry_id: &entry
+      selector:
+        config_entry:
+          integration: gofanco_matrix
+
+set_route:
+  fields:
+    output:
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 4
+          mode: box
+    input:
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 4
+          mode: box
+    config_entry_id: *entry
+
+recall_preset:
+  fields:
+    preset: &preset
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 9
+          mode: box
+    config_entry_id: *entry
+
+save_preset:
+  fields:
+    preset: *preset
+    config_entry_id: *entry
+
+set_hdcp:
+  fields:
+    output: &output_all
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 5
+          mode: box
+    mode:
+      required: true
+      selector:
+        select:
+          options: ["on", "off", "match", "bypass"]
+          translation_key: hdcp_mode
+    config_entry_id: *entry
+
+set_edid:
+  fields:
+    input: &input_all
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 4
+          mode: box
+    edid:
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 9
+          mode: box
+    config_entry_id: *entry
+
+copy_edid:
+  fields:
+    output: *output_all
+    input: *input_all
+    config_entry_id: *entry
+
+restore_default_edid:
+  fields:
+    config_entry_id: *entry
+
+set_poc:
+  fields:
+    receiver:
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 3
+          mode: box
+    "on":
+      required: true
+      selector:
+        boolean:
+    config_entry_id: *entry
+
+set_hdmi_5v:
+  fields:
+    output: &hdmi_output
+      required: true
+      selector:
+        select:
+          options: ["0", "4", "5"]
+    "on":
+      required: true
+      selector:
+        boolean:
+    config_entry_id: *entry
+
+cec_source:
+  fields:
+    input: *input_all
+    key:
+      required: true
+      selector:
+        select:
+          options: ["power_on", "power_off", "menu", "up", "down", "left", "right", "enter", "back", "exit"]
+          translation_key: cec_source_key
+    device_type:
+      default: "04"
+      selector:
+        text:
+    config_entry_id: *entry
+
+cec_display:
+  fields:
+    output: *hdmi_output
+    key:
+      required: true
+      selector:
+        select:
+          options: ["power_on", "power_off", "volume_up", "volume_down", "mute"]
+          translation_key: cec_display_key
+    device_type:
+      default: "40"
+      selector:
+        text:
+    config_entry_id: *entry
+
+factory_reset:
+  fields:
+    confirm:
+      required: true
+      selector:
+        boolean:
+    config_entry_id: *entry
