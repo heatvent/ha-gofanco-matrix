@@ -70,17 +70,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: MatrixConfigEntry) -> bo
         """Fill in firmware/model once the matrix has reported them."""
         state = coordinator.state
         registry = dr.async_get(hass)
-        device = registry.async_get_device(identifiers={coordinator.device_identifier()})
+        identifier = coordinator.device_identifier()
+        device = next(
+            (
+                dev
+                for dev in dr.async_entries_for_config_entry(registry, entry.entry_id)
+                if identifier in dev.identifiers
+            ),
+            None,
+        )
         if device is None or not state.firmware:
             return
-        if device.sw_version != state.firmware or (
-            state.model_name and device.model != state.model_name
-        ):
+        hw_version = f"CPLD {state.cpld}" if state.cpld else device.hw_version
+        if device.sw_version != state.firmware or device.hw_version != hw_version:
             registry.async_update_device(
-                device.id,
-                sw_version=state.firmware,
-                model=state.model_name or device.model,
-                hw_version=f"CPLD {state.cpld}" if state.cpld else device.hw_version,
+                device.id, sw_version=state.firmware, hw_version=hw_version
             )
 
     entry.async_on_unload(coordinator.async_add_listener(_sync_device))

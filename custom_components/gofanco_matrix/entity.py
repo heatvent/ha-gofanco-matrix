@@ -16,20 +16,25 @@ class MatrixEntity(CoordinatorEntity[MatrixCoordinator]):
         super().__init__(coordinator)
         self._attr_unique_id = f"{coordinator.entry.entry_id}_{key}"
         state = coordinator.state
-        self._attr_device_info = DeviceInfo(
+        info = DeviceInfo(
             identifiers={coordinator.device_identifier()},
             name=coordinator.entry.title,
             manufacturer=MANUFACTURER,
-            model=state.model_name or "Matrix44-HDBT",
+            model="Matrix44-HDBT",
             model_id="G4-0064B",
-            sw_version=state.firmware,
-            hw_version=f"CPLD {state.cpld}" if state.cpld else None,
             configuration_url=(
                 None
                 if coordinator.is_serial
                 else f"http://{coordinator.entry.data.get('host')}/"
             ),
         )
+        # In standby the matrix reports no version; leave the registry's
+        # last known values alone rather than blanking them.
+        if state.firmware:
+            info["sw_version"] = state.firmware
+        if state.cpld:
+            info["hw_version"] = f"CPLD {state.cpld}"
+        self._attr_device_info = info
 
     @property
     def available(self) -> bool:

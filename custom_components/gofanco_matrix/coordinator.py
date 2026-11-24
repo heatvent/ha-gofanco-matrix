@@ -175,11 +175,19 @@ class MatrixCoordinator(DataUpdateCoordinator[protocol.MatrixState]):
         if self.state.power is False and self.auto_power_on:
             await self.async_send(protocol.cmd_power(True))
             await asyncio.sleep(POWER_ON_SETTLE)
+            self.hass.async_create_task(self.async_request_refresh())
 
     async def async_set_power(self, on: bool) -> None:
         await self.async_send(protocol.cmd_power(on))
         self.state.power = on
         self.async_set_updated_data(self.state)
+        if on:
+            # Standby hides temperature, links and settings; read them once awake.
+            self.hass.async_create_task(self._async_refresh_after_wake())
+
+    async def _async_refresh_after_wake(self) -> None:
+        await asyncio.sleep(POWER_ON_SETTLE)
+        await self.async_request_refresh()
 
     async def async_route(self, output: int, input_: int) -> None:
         command = protocol.cmd_route(output, input_)
